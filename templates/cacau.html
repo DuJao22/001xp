@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cacau Show</title>
+  <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxuBqDmPCmLF86wwZ5lUKyAVSZcCk5Vt0KoA&s">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+<style>
+  .bg-cacau-brown { background-color: #212529; }
+  .text-cacau-brown { color: #4b2e2e; }
+  .bg-cacau-gold { background-color: #f8f9fa; }
+  .bg-cacau-entra { background-color: #9c7561; }
+  .text-cacau-gold { color: #f4c542; }
+
+  .carousel { position: relative; overflow: hidden; }
+  .carousel-inner { display: flex; transition: transform 0.5s ease; }
+  .carousel-item { min-width: 100%; }
+  .mt-4 img {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      display: block;
+      margin: 0 auto 1rem auto;
+      border-radius: 8px; /* opcional, para cantos arredondados */
+    }
+  .produtos-container {
+  padding: 1rem;
+}
+
+.card-produto {
+  max-width: 28rem;
+  margin: 1rem auto;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.imagem-container {
+  position: relative;
+}
+
+.imagem-produto {
+  width: 100%;
+  display: block;
+}
+
+.icone-favorito {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 1.5rem;
+  color: #d4af37; /* cacau-gold */
+}
+
+.conteudo-produto {
+  padding: 1rem;
+}
+
+.nome-produto {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #5a3e36; /* cacau-brown */
+}
+
+.etiquetas {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.etiqueta {
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  margin-right: 0.5rem;
+}
+
+.preco-container {
+  margin-top: 0.5rem;
+}
+
+.preco-antigo {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.preco-novo {
+  color: #ef4444;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 0.5rem;
+}
+
+.por-unidade {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.quantidade-container {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.btn-quantidade {
+  background-color: #e5e7eb;
+  color: #374151;
+  padding: 0.25rem 0.5rem;
+}
+
+.input-quantidade {
+  width: 3rem;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.btn-adicionar {
+  background-color: green; /* cacau-gold */
+  color: white;
+  font-size: 1.125rem;
+  font-weight: bold;
+  width: 100%;
+  padding: 0.5rem 0;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+</style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
+    <div class="bg-cacau-brown text-white p-4 flex flex-col space-y-3 md:flex-row md:space-y-0 md:justify-between md:items-center">
+      <!-- Logo -->
+      <div class="flex items-center justify-between md:justify-start md:space-x-2">
+        <img src="https://www.cacaushow.com.br/on/demandware.static/Sites-CacauShow-Site/-/default/dwd33a115d/svg/logo_cacau_show.svg" class="h-8" alt="Logo" />
+        
+        <!-- Ícones Mobile (Carrinho e Menu) -->
+        <div class="flex md:hidden items-center space-x-4">
+          <div class="relative">
+          <i class="fas fa-shopping-cart text-xl"></i>
+          <span id="contador-carrinho" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">0</span>
+        </div>
+
+          <i class="fas fa-bars text-xl"></i>
+        </div>
+      </div>
+
+      <!-- Campo de busca -->
+      <div class="flex items-center space-x-2">
+        <input type="text" placeholder="Buscar Produto" class="bg-gray-200 text-black p-2 rounded w-full md:w-auto" />
+        <i class="fas fa-search text-xl"></i>
+      </div>
+
+      <!-- Localização + Entrar (Mobile e Desktop) -->
+      <div class="flex items-center justify-between md:justify-end space-x-2 w-full md:w-auto">
+        <div class="flex items-center space-x-1">
+          <i class="fas fa-map-marker-alt text-xl"></i>
+          <span class="hidden md:inline" id="user-location">Cacau Show - SP</span>
+          <button class="text-white font-bold underline md:bg-cacau-gold md:text-white md:px-2 md:py-1 md:rounded">ALTERAR</button>
+        </div>
+        <button class="bg-cacau-entra text-white px-3 py-1 rounded flex items-center space-x-1">
+          <i class="fas fa-user"></i>
+          <span>ENTRAR</span>
+        </button>
+      </div>
+
+      <!-- Ícones Desktop -->
+      <div class="hidden md:flex items-center space-x-4">
+        <div class="relative">
+          <i class="fas fa-shopping-cart text-xl"></i>
+          <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">0</span>
+        </div>
+        <i class="fas fa-bars text-xl"></i>
+      </div>
+    </div>
+
+
+  <!-- Carrossel -->
+  <div class="carousel mt-4">
+    <div class="carousel-inner">
+      <div class="carousel-item">
+        <img src="https://www.cacaushow.com.br/on/demandware.static/-/Sites-CacauShow-Library/default/dw3fb34b98/Promo-Pascoa-25-Banner-Desk-2.png" alt="Banner 1" class="w-full" />
+      </div>
+      <div class="carousel-item">
+        <img src="https://www.cacaushow.com.br/on/demandware.static/-/Sites-CacauShow-Library/default/dw564aab3d/Promo-Pascoa-25-Banner-Desk-1.png" alt="Banner 2" class="w-full" />
+      </div>
+      
+    </div>
+    <button onclick="prevSlide()" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-cacau-entra text-white px-4 py-2">❮</button>
+    <button onclick="nextSlide()" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-cacau-entra text-white px-4 py-2">❯</button>
+  </div>                    
+
+  <!-- Main Promo Section -->
+  <div class="p-4">
+    <!-- Scroll horizontal com botão de adicionar ao carrinho -->
+<div class="p-4 overflow-x-auto">
+  <div class="flex gap-6 w-max pb-2">
+    {% for produto in produto_promocao %}
+    <div class="bg-white p-4 rounded-2xl shadow-lg min-w-[300px] max-w-[300px] flex-shrink-0 transition-transform transform hover:scale-105">
+      <div class="relative">
+        <img 
+          class="w-full h-48 object-cover rounded-xl shadow-sm transition-all duration-300 hover:brightness-90" 
+          src="{{ produto.imagem[0] }}" 
+          alt="Promoção"
+        />
+      </div>
+
+      <div class="mt-4 text-center space-y-1">
+        <h2 class="text-xl font-bold text-cacau-brown">{{ produto.titulo }}</h2>
+        <p class="text-sm text-gray-700">{{ produto.subtitulo }}</p>
+        <p class="text-sm text-gray-700 font-medium">{{ produto.info_extra }}</p>
+        <p class="text-base font-semibold line-through text-gray-400">De {{ produto.preco_antigo }}</p>
+        <p class="text-xl font-bold text-red-600">Por {{ produto.preco }}</p>
+        <p class="text-xs text-gray-500 italic">{{ produto.observacao }}</p>
+      </div>
+
+      <!-- Botão Adicionar ao Carrinho -->
+      <div class="mt-4">
+        <button 
+          class="w-full bg-cacau-brown text-white py-2 rounded-xl hover:bg-[#4b2e18] transition duration-300"
+          onclick="adicionarAoCarrinho('{{ produto.id }}')"
+        >
+          Adicionar ao Carrinho
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+    <div class="mt-4 text-center">
+      <p class="text-xl font-bold text-cacau-brown">A Páscoa ainda mais doce e divertida com Cacau Show</p>
+    </div>
+
+    <div class="mt-4">
+      <img class="w-full rounded" src="https://www.cacaushow.com.br/on/demandware.static/-/Sites-CacauShow-Library/default/dweb1901d8/images/homepage/Desk_339x340_pascoa.jpg" alt="Promo extra" />
+    </div>
+  </div>
+
+    <!-- Produtos dinâmicos -->
+    <div class="produtos-container">
+      {% for produto in produtos %}
+      <div class="card-produto">
+        <div class="imagem-container relative">
+          <img src="{{ produto.imagem[0] }}" 
+     class="imagem-produto rounded w-full transition-all duration-500" 
+     alt="Produto" 
+     id="img-{{ loop.index }}" 
+     data-index="0" 
+     data-total="{{ produto.imagem|length }}"
+     data-imagens='{{ produto.imagem | tojson }}'>
+          <button onclick="voltarImagem({{ loop.index }}, {{ produto.imagem|tojson }})" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white rounded-full p-1 shadow"><</button>
+          <button onclick="avancarImagem({{ loop.index }}, {{ produto.imagem|tojson }})" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white rounded-full p-1 shadow">></button>
+        </div>
+        <div class="conteudo-produto">
+          <h2 class="nome-produto">{{ produto.nome }}</h2>
+          {% if produto.etiquetas %}
+          <div class="etiquetas">
+            {% for etiqueta in produto.etiquetas %}
+            <span class="etiqueta bg-cacau-entra">{{ etiqueta.texto }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <div class="preco-container">
+            <span class="preco-antigo">{{ produto.preco_antigo }}</span>
+            <span class="preco-novo">{{ produto.preco }}</span>
+            <span class="por-unidade">/unid</span>
+          </div>
+          <div class="quantidade-container">
+            <button class="btn-quantidade">-</button>
+            <input type="number" class="input-quantidade" value="1" />
+            <button class="btn-quantidade">+</button>
+          </div>
+          <button class="btn-adicionar" onclick="adicionarAoCarrinho('{{ produto.id }}')" >Adicionar ao Carrinho</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+
+
+  <!-- Informativos -->
+  <div class="max-w-screen-lg mx-auto">
+    <div class="relative mt-8">
+      <img src="https://www.cacaushow.com.br/on/demandware.static/-/Sites-CacauShow-Library/default/dw24549a9e/images/homepage/Desk_339x340_linha_do_chef.jpg" class="w-full" alt="Banner 1" />
+      
+    </div>
+    <div class="relative mt-4">
+      <img src="https://www.cacaushow.com.br/on/demandware.static/-/Sites-CacauShow-Library/default/dw911ae5dc/images/homepage/Desk_339x340_lacreme.jpg" class="w-full" alt="Banner 2" />
+      
+    </div>
+    <div class="mt-4">
+    
+      <img src="https://www.cacaushow.com.br/on/demandware.static/-/Sites-CacauShow-Library/default/dwcfcb2dbb/Desk_1310x490_coelho_chef.gif" class="mx-auto mb-4" width="100" alt="Rodapé" />
+                 
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="bg-cacau-gold text-center py-8 mt-8">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxuBqDmPCmLF86wwZ5lUKyAVSZcCk5Vt0KoA&s" class="mx-auto mb-4" width="100" alt="Rodapé" />
+  
+    <img src="https://www.cacaushow.com.br/on/demandware.static/Sites-CacauShow-Site/-/default/dw4941dcf7/images/bg_footer-feliz.png" class="mx-auto mb-4" width="100" alt="Rodapé" />
+    
+  </div>
+    
+
+  <div class="bg-cacau-brown text-white text-center py-4">
+    <p class="text-sm">
+      © Copyright 2025. Todos os direitos reservados. | Cacau Comércio Eletrônico LTDA 32.143.933/0003-96 |
+      Endereço: Rodovia Anhanguera, KM 31,7, 800, Bloco 300 Galpão 20, 21 e 22 - Area Selia, Bairro Laranjeiras,
+      Anhanguera, Cajamar – SP, CEP 07.753-580
+    </p>
+  </div>
+
+  <!-- Chat -->
+  <div class="fixed bottom-4 right-4">
+    <button class="bg-cacau-gold text-white p-4 rounded-full shadow-lg">
+      <i class="fas fa-comment-dots text-xl"></i>
+    </button>
+  </div>
+
+  <script>
+
+    
+      function atualizarContadorCarrinho() {
+        fetch('/quantidade_carrinho')
+          .then(res => res.json())
+          .then(data => {
+            const contador = document.getElementById('contador-carrinho');
+            contador.textContent = data.quantidade;
+          });
+      }
+
+      // Atualiza quando a página carrega
+      document.addEventListener('DOMContentLoaded', atualizarContadorCarrinho);
+    
+
+                     
+
+
+      function adicionarAoCarrinho(id, titulo, preco, imagem) {
+        fetch('/adicionar_carrinho', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: id,
+            titulo: titulo,
+            preco: preco,
+            imagem: imagem,
+            quantidade: 1
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.mensagem);
+        });
+      }
+               
+
+      const imagensAtuais = {};
+
+      function trocarImagem(id, imagens, novaIndex) {
+        const img = document.getElementById("img-" + id);
+        const total = imagens.length;
+        if (novaIndex >= total) novaIndex = 0;
+        if (novaIndex < 0) novaIndex = total - 1;
+        img.src = imagens[novaIndex];
+        img.setAttribute("data-index", novaIndex);
+        imagensAtuais[id] = novaIndex;
+      }
+
+      function avancarImagem(id, imagens) {
+        const atual = imagensAtuais[id] !== undefined ? imagensAtuais[id] : 0;
+        trocarImagem(id, imagens, atual + 1);
+      }
+
+      function voltarImagem(id, imagens) {
+        const atual = imagensAtuais[id] !== undefined ? imagensAtuais[id] : 0;
+        trocarImagem(id, imagens, atual - 1);
+      }
+
+      // Troca automática a cada 10 segundos
+      document.addEventListener("DOMContentLoaded", function () {
+        const imagens = document.querySelectorAll(".imagem-produto");
+
+        imagens.forEach((img) => {
+          const id = img.id.replace("img-", "");
+          const imagensJson = img.getAttribute("data-imagens");
+
+          if (!imagensJson) return;
+
+          const lista = JSON.parse(imagensJson);
+          imagensAtuais[id] = 0;
+
+          setInterval(() => {
+            avancarImagem(id, lista);
+          }, 3000);
+        });
+      });
+
+
+
+    let currentIndex = 0;
+
+    function showSlide(index) {
+      const slides = document.querySelectorAll('.carousel-item');
+
+      if (index >= slides.length) {
+        currentIndex = 0;
+      } else if (index < 0) {
+        currentIndex = slides.length - 1;
+      } else {
+        currentIndex = index;
+      }
+      const offset = -currentIndex * 100; // Calcula o deslocamento
+      document.querySelector('.carousel-inner').style.transform = `translateX(${offset}%)`;
+    }
+
+    function nextSlide() {
+      showSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentIndex - 1);
+    }
+
+    // Inicializa o carrossel mostrando o primeiro slide
+    showSlide(currentIndex);
+
+    // Passa automaticamente a cada 30 segundos (30.000 milissegundos)
+    setInterval(nextSlide, 30000);
+    
+                       
+    function getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+      } else {
+        document.getElementById("user-location").textContent = "Geolocalização não suportada.";
+      }
+
+      function success(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+          .then(response => response.json())
+          .then(data => {
+            const city = data.address.city || data.address.town || data.address.village || "Local";
+            const state = data.address.state || "";
+            document.getElementById("user-location").textContent = `${city} - ${state}`;
+          })
+          .catch(() => {
+            document.getElementById("user-location").textContent = "Localização indisponível.";
+          })
+      }
+
+      function error() {
+        document.getElementById("user-location").textContent = "Permissão negada.";
+      }
+    }
+
+    window.onload = getUserLocation;
+
+                     
+  </script>
+
+</body>
+</html>
