@@ -46,7 +46,7 @@ def adicionar_carrinho():
     conn.commit()
     conn.close()
 
-    return jsonify({'mensagem': 'Produto adicionado com sucesso!'})
+    return redirect('/')
 
 @app.route('/quantidade_carrinho')
 def quantidade_carrinho():
