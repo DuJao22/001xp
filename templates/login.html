@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cacau Show</title>
+  <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxuBqDmPCmLF86wwZ5lUKyAVSZcCk5Vt0KoA&s">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <style>
+    .bg-cacau-brown { background-color: #212529; }
+    .text-cacau-brown { color: #4b2e2e; }
+    .bg-cacau-gold { background-color: #f8f9fa; }
+    .bg-cacau-entra { background-color: #9c7561; }
+    .text-cacau-gold { color: #f4c542; }
+
+    .carousel { position: relative; overflow: hidden; }
+    .carousel-inner { display: flex; transition: transform 0.5s ease; }
+    .carousel-item { min-width: 100%; }
+
+    .produtos-container {
+      padding: 1rem;
+    }
+
+    .card-produto {
+      max-width: 28rem;
+      margin: 1rem auto;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .imagem-container {
+      position: relative;
+    }
+
+    .imagem-produto {
+      width: 100%;
+      display: block;
+    }
+
+    .icone-favorito {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.5rem;
+      color: #d4af37; /* cacau-gold */
+    }
+
+    .conteudo-produto {
+      padding: 1rem;
+    }
+
+    .nome-produto {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #5a3e36; /* cacau-brown */
+    }
+
+    .etiquetas {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .etiqueta {
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      margin-right: 0.5rem;
+    }
+
+    .preco-container {
+      margin-top: 0.5rem;
+    }
+
+    .preco-antigo {
+      color: #9ca3af;
+      text-decoration: line-through;
+    }
+
+    .preco-novo {
+      color: #ef4444;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-left: 0.5rem;
+    }
+
+    .por-unidade {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .quantidade-container {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .btn-quantidade {
+      background-color: #e5e7eb;
+      color: #374151;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .input-quantidade {
+      width: 3rem;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .btn-adicionar {
+      background-color: green; /* cacau-gold */
+      color: white;
+      font-size: 1.125rem;
+      font-weight: bold;
+      width: 100%;
+      padding: 0.5rem 0;
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
+<div class="bg-cacau-brown text-white p-4 flex flex-col space-y-3 md:flex-row md:space-y-0 md:justify-between md:items-center">
+  <div class="flex items-center justify-between md:justify-start md:space-x-2">
+    <img src="https://www.cacaushow.com.br/on/demandware.static/Sites-CacauShow-Site/-/default/dwd33a115d/svg/logo_cacau_show.svg" class="h-8" alt="Logo" />
+    
+    <div class="flex md:hidden items-center space-x-4">
+      <div class="relative">
+        <span id="contador-carrinho" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1"></span>
+      </div>
+      <i class="fas fa-bars text-xl"></i>
+    </div>
+  </div>
+
+  <div class="flex items-center space-x-2">
+    <input type="text" placeholder="Buscar Produto" class="bg-gray-200 text-black p-2 rounded w-full md:w-auto" />
+    <i class="fas fa-search text-xl"></i>
+  </div>
+
+  <div class="flex items-center justify-between md:justify-end space-x-2 w-full md:w-auto">
+    <div class="flex items-center space-x-1">
+      <i class="fas fa-map-marker-alt text-xl"></i>
+      <span class="hidden md:inline" id="user-location">Cacau Show - SP</span>
+      <button class="text-white font-bold underline md:bg-cacau-gold md:text-white md:px-2 md:py-1 md:rounded">ALTERAR</button>
+    </div>
+    <button class="bg-cacau-entra text-white px-3 py-1 rounded flex items-center space-x-1">
+      <i class="fas fa-user"></i>
+      <span>ENTRAR</span>
+    </button>
+  </div>
+
+  <div class="hidden md:flex items-center space-x-4">
+    <div class="relative">
+      <i class="fas fa-shopping-cart text-xl"></i>
+      <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">0</span>
+    </div>
+    <i class="fas fa-bars text-xl"></i>
+  </div>
+</div>
+
+<main class="p-4">
+
+  <div class="w-full max-w-xs mx-auto">
+    <h1 class="text-2xl font-bold text-brown-800 mb-4">Entrar ou Criar Conta</h1>
+    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+          E-mail ou CPF
+        </label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="text" placeholder="E-mail ou CPF">
+      </div>
+      <div class="flex items-center justify-between">
+        <button class="bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+          CONTINUAR
+        </button>
+      </div>
+      <p class="text-xs text-gray-500 mt-4">
+        Ao continuar, você concorda com os <a href="#" class="text-blue-500">Termos de uso da Casashow</a>
+      </p>
+      <p class="text-xs text-gray-500">
+        Por favor verifique a <a href="#" class="text-blue-500">Política de Privacidade</a>
+      </p>
+    </form>
+  </div>
+
+</main>
+
+</body>
+</html>
